@@ -18,7 +18,7 @@ type JobListItemProps = {
 export default function JobListItem({ jobItem }: JobListItemProps) {
   return (
     <li className="job-item">
-      <a className="job-item__link">
+      <a href={`#${jobItem.id}`} className="job-item__link">
         <div className="job-item__badge">{jobItem.badgeLetters}</div>
 
         <div className="job-item__middle">
@@ -28,7 +28,7 @@ export default function JobListItem({ jobItem }: JobListItemProps) {
 
         <div className="job-item__right">
           <BookmarkIcon />
-          <time className="job-item__time">{jobItem.daysAgo}</time>
+          <time className="job-item__time">{jobItem.daysAgo}d</time>
         </div>
       </a>
     </li>
