@@ -40,18 +40,21 @@ export function useJobItems(searchText: string) {
 
 export function useJobItem(id: number | null) {
   const [jobItem, setJobItem] = useState<JobItemExpendend | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
+      setLoading(true);
       const res = await fetch(`${BASE_URL}/${id}`);
       const data = await res.json();
       setJobItem(data);
+      setLoading(false);
     };
     fetchData();
   }, [id]);
 
-  return jobItem;
+  return [jobItem, loading] as const;
 }
 
 export function useActiveId() {

@@ -1,9 +1,12 @@
 import { useActiveId, useJobItem } from "../hooks/hooks";
 import BookmarkIcon from "./BookmarkIcon";
+import Spinner from "./Spinner";
 
 export default function JobItemContent() {
   const activeId = useActiveId();
-  const jobItem = useJobItem(activeId);
+  const [jobItem, isLoading] = useJobItem(activeId); // in an array we can change the name of the variable as we want but not in object
+
+  if (isLoading) return <LoadingJobContent />;
 
   if (!jobItem) return <EmptyJobContent />;
 
@@ -90,6 +93,16 @@ export default function JobItemContent() {
             it!
           </p>
         </footer>
+      </div>
+    </section>
+  );
+}
+
+function LoadingJobContent() {
+  return (
+    <section className="job-details">
+      <div>
+        <Spinner />
       </div>
     </section>
   );
