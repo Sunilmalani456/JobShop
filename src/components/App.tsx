@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
+import { useJobItems } from "../hooks/hooks";
 import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
 import Header from "./Header";
 import JobItemContent from "./JobItemContent";
-import Sidebar, { SidebarTop } from "./Sidebar";
 import JobList from "./JobList";
 import Pagination from "./PaginationControls";
 import ResultsCount from "./ResultsCount";
+import Sidebar, { SidebarTop } from "./Sidebar";
 import Sorting from "./SortingControls";
-import { useActiveId, useJobItem, useJobItems } from "../hooks/hooks";
 
 function App() {
   const [searchText, setSearchText] = useState("");

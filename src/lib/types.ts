@@ -7,6 +7,6 @@ export type JobItemExpendend = JobItem & {
   qualifications: string[];
   reviews: Array<string>;
   duration: string;
-  coverImageURL: string;
+  coverImgURL: string;
   companyURL: string;
 };
