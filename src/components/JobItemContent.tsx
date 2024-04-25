@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useActiveId, useJobItem } from "../hooks/hooks";
 import BookmarkIcon from "./BookmarkIcon";
 import Spinner from "./Spinner";
 
 export default function JobItemContent() {
   const activeId = useActiveId();
-  const { jobItem, loading } = useJobItem(activeId);
+  const { jobItem, isLoading } = useJobItem(activeId);
   // in an array we can change the name of the variable as we want but not in object
 
-  if (loading) return <LoadingJobContent />;
+  if (isLoading) return <LoadingJobContent />;
 
   if (!jobItem) return <EmptyJobContent />;
 
@@ -62,7 +63,7 @@ export default function JobItemContent() {
               </p>
             </div>
             <ul className="qualifications__list">
-              {jobItem.qualifications.map((qualification) => (
+              {jobItem.qualifications.map((qualification: any) => (
                 <li key={qualification} className="qualifications__item">
                   {qualification}
                 </li>
@@ -78,7 +79,7 @@ export default function JobItemContent() {
               </p>
             </div>
             <ul className="reviews__list">
-              {jobItem.reviews.map((review) => (
+              {jobItem.reviews.map((review: any) => (
                 <li key={review} className="reviews__item">
                   {review}
                 </li>

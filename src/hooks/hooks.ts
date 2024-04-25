@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { JobItemExpendend } from "../lib/types";
 
 export const BASE_URL =
@@ -13,6 +15,63 @@ export type JobItem = {
   relevanceScore: number;
   daysAgo: number;
 };
+
+type JobItemApiResponse = {
+  public: boolean;
+  jobItem: JobItemExpendend;
+};
+
+// export function useJobItem(id: number | null) {
+//   const [jobItem, setJobItem] = useState<JobItemExpendend | null>(null);
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => {
+//     if (!id) return;
+//     const fetchData = async () => {
+//       setLoading(true);
+//       const res = await fetch(`${BASE_URL}/${id}`);
+//       const data = await res.json();
+//       setJobItem(data.jobItem);
+//       // console.log(data.jobItem.);
+
+//       setLoading(false);
+//     };
+//     fetchData();
+//   }, [id]);
+
+//   return { jobItem, loading } as const;
+// }
+
+const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
+  const res = await fetch(`${BASE_URL}/${id}`);
+
+  // 4xx or 5xx
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.description);
+  }
+
+  const data = await res.json();
+  return data;
+};
+
+export function useJobItem(id: number | null) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["jobItem", id],
+    queryFn: () => (id ? fetchJobItem(id) : null),
+    staleTime: 1000 * 60 * 60, // 1 hour
+    refetchOnWindowFocus: false,
+    retry: false, // disable retry
+    enabled: Boolean(id), // disable query when id is null or undefined. it only runs when id is truthy first mount.
+    // @ts-ignore
+    onError: (error: Error) => {
+      console.log(error);
+    },
+  });
+
+  const jobItem = data?.jobItem;
+  return { jobItem, isLoading } as const;
+}
 
 export function useJobItems(searchText: string) {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
@@ -37,27 +96,6 @@ export function useJobItems(searchText: string) {
   }, [searchText]);
 
   return { jobItemsSlice, loading, totalJobItems } as const;
-}
-
-export function useJobItem(id: number | null) {
-  const [jobItem, setJobItem] = useState<JobItemExpendend | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-    const fetchData = async () => {
-      setLoading(true);
-      const res = await fetch(`${BASE_URL}/${id}`);
-      const data = await res.json();
-      setJobItem(data.jobItem);
-      // console.log(data.jobItem.);
-
-      setLoading(false);
-    };
-    fetchData();
-  }, [id]);
-
-  return { jobItem, loading } as const;
 }
 
 export function useActiveId() {
