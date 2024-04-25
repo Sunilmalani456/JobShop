@@ -18,6 +18,7 @@ export function useJobItems(searchText: string) {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const totalJobItems = jobItems.length;
   const jobItemsSlice = jobItems.slice(0, 7);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export function useJobItems(searchText: string) {
     fetchJobs();
   }, [searchText]);
 
-  return [jobItemsSlice, loading] as const;
+  return { jobItemsSlice, loading, totalJobItems } as const;
 }
 
 export function useJobItem(id: number | null) {
@@ -56,7 +57,7 @@ export function useJobItem(id: number | null) {
     fetchData();
   }, [id]);
 
-  return [jobItem, loading] as const;
+  return { jobItem, loading } as const;
 }
 
 export function useActiveId() {
@@ -78,3 +79,33 @@ export function useActiveId() {
 
   return activeid;
 }
+
+export function useDebounce<T>(searchText: T): T {
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 250);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchText]);
+
+  return debouncedSearchText;
+}
+
+// export function useDebounce<T>(value: T, delay = 250): T {
+//   const [debouncedValue, setDebouncedValue] = useState(value);
+
+//   useEffect(() => {
+//     const handler = setTimeout(() => {
+//       setDebouncedValue(value);
+//     }, delay);
+
+//     return () => {
+//       clearTimeout(handler);
+//     };
+//   }, [value, delay]);
+
+//   return debouncedValue;
+// }

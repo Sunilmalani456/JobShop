@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
-import { useJobItems } from "../hooks/hooks";
+import { useDebounce, useJobItems } from "../hooks/hooks";
 import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
@@ -14,8 +14,11 @@ import Sorting from "./SortingControls";
 
 function App() {
   const [searchText, setSearchText] = useState("");
-  const [jobItemsSlice, loading] = useJobItems(searchText);
+  const debouncedSearchText = useDebounce(searchText);
+  console.log(debouncedSearchText);
 
+  const { jobItemsSlice, loading, totalJobItems } =
+    useJobItems(debouncedSearchText);
 
   return (
     <>
@@ -24,7 +27,7 @@ function App() {
       <Container>
         <Sidebar>
           <SidebarTop>
-            <ResultsCount />
+            <ResultsCount totalNumberOfResults={totalJobItems} />
             <Sorting />
           </SidebarTop>
           <JobList jobItems={jobItemsSlice} loading={loading} />

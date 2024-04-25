@@ -4,9 +4,10 @@ import Spinner from "./Spinner";
 
 export default function JobItemContent() {
   const activeId = useActiveId();
-  const [jobItem, isLoading] = useJobItem(activeId); // in an array we can change the name of the variable as we want but not in object
+  const { jobItem, loading } = useJobItem(activeId);
+  // in an array we can change the name of the variable as we want but not in object
 
-  if (isLoading) return <LoadingJobContent />;
+  if (loading) return <LoadingJobContent />;
 
   if (!jobItem) return <EmptyJobContent />;
 
@@ -61,8 +62,8 @@ export default function JobItemContent() {
               </p>
             </div>
             <ul className="qualifications__list">
-              {jobItem.qualifications.map((qualification, index) => (
-                <li key={index} className="qualifications__item">
+              {jobItem.qualifications.map((qualification) => (
+                <li key={qualification} className="qualifications__item">
                   {qualification}
                 </li>
               ))}
@@ -77,8 +78,8 @@ export default function JobItemContent() {
               </p>
             </div>
             <ul className="reviews__list">
-              {jobItem.reviews.map((review, index) => (
-                <li key={index} className="reviews__item">
+              {jobItem.reviews.map((review) => (
+                <li key={review} className="reviews__item">
                   {review}
                 </li>
               ))}
