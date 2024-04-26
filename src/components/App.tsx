@@ -11,14 +11,19 @@ import Pagination from "./PaginationControls";
 import ResultsCount from "./ResultsCount";
 import Sidebar, { SidebarTop } from "./Sidebar";
 import Sorting from "./SortingControls";
+import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(searchText);
   console.log(debouncedSearchText);
 
-  const { jobItemsSlice, loading, totalJobItems } =
-    useJobItems(debouncedSearchText);
+  const { jobItems, isLoading, error } = useJobItems(debouncedSearchText);
+
+  const totalJobItems = jobItems?.length || 0;
+  const jobItemsSlice = jobItems?.slice(0, 7) || [];
+
+  if (error) toast.error(error.message);
 
   return (
     <>
@@ -30,12 +35,13 @@ function App() {
             <ResultsCount totalNumberOfResults={totalJobItems} />
             <Sorting />
           </SidebarTop>
-          <JobList jobItems={jobItemsSlice} loading={loading} />
+          <JobList jobItems={jobItemsSlice} loading={isLoading} />
           <Pagination />
         </Sidebar>
         <JobItemContent />
       </Container>
       <Footer />
+      <Toaster position="top-right" />
     </>
   );
 }
