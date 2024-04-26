@@ -58,7 +58,7 @@ const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
 };
 
 export function useJobItem(id: number | null) {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["jobItem", id],
     queryFn: () => (id ? fetchJobItem(id) : null),
     staleTime: 1000 * 60 * 60, // 1 hour
@@ -82,7 +82,7 @@ export function useJobItem(id: number | null) {
   });
 
   const jobItem = data?.jobItem;
-  return { jobItem, isLoading } as const;
+  return { jobItem, isLoading, error } as const;
 }
 
 // ---------------------------------------------------------
