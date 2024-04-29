@@ -5,7 +5,7 @@ type ResultsCount = {
 export default function ResultsCount({ totalNumberOfResults }: ResultsCount) {
   return (
     <p className="count">
-      <span className="u-bold">{totalNumberOfResults}</span>
+      <span className="u-bold">{totalNumberOfResults} Results</span>
     </p>
   );
 }

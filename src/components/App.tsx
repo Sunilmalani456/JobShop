@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
-import { useDebounce, useJobItems } from "../hooks/hooks";
+import { RESULT_PER_PAGE, useDebounce, useJobItems } from "../hooks/hooks";
 import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
@@ -16,13 +16,27 @@ import toast, { Toaster } from "react-hot-toast";
 function App() {
   const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(searchText);
-  console.log(debouncedSearchText);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // console.log(debouncedSearchText);
 
   const { jobItems, isLoading, error } = useJobItems(debouncedSearchText);
 
   const totalJobItems = jobItems?.length || 0;
-  const jobItemsSlice = jobItems?.slice(0, 7) || [];
+  const totalNumberOfPages = totalJobItems / RESULT_PER_PAGE;
+  const jobItemsSlice =
+    jobItems?.slice(
+      currentPage * RESULT_PER_PAGE - RESULT_PER_PAGE,
+      currentPage * RESULT_PER_PAGE
+    ) || [];
 
+  const handlePaginationClick = (page: "next" | "prev") => {
+    if (page === "next") {
+      setCurrentPage((prev) => prev + 1);
+    } else if (page === "prev") {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
   if (error) toast.error(error.message);
 
   return (
@@ -36,7 +50,11 @@ function App() {
             <Sorting />
           </SidebarTop>
           <JobList jobItems={jobItemsSlice} loading={isLoading} />
-          <Pagination />
+          <Pagination
+            currentPage={currentPage}
+            onClick={handlePaginationClick}
+            totalNumberOfPages={totalNumberOfPages}
+          />
         </Sidebar>
         <JobItemContent />
       </Container>
