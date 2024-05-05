@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { JobItemExpendend } from "../lib/types";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { BookmarkContext } from "../contexts/BookmarkContextProvider";
+import { JobItemExpendend } from "../lib/types";
 
 const handleErrors = (error: unknown) => {
   let message;
@@ -16,7 +17,7 @@ const handleErrors = (error: unknown) => {
   }
 
   toast.error(message);
-}
+};
 
 export const RESULT_PER_PAGE = 7;
 export const BASE_URL =
@@ -42,7 +43,6 @@ type JobItemsApiResponse = {
   sorted: boolean;
   jobItems: JobItem[];
 };
-
 
 const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
   const res = await fetch(`${BASE_URL}/${id}`);
@@ -87,23 +87,24 @@ export function useJobItem(id: number | null) {
 
 // ---------------------------------------------------------
 
-const fetchJobItems = async (searchText: string): Promise<JobItemsApiResponse> => {
+const fetchJobItems = async (
+  searchText: string
+): Promise<JobItemsApiResponse> => {
   const response = await fetch(`${BASE_URL}?search=${searchText}`);
 
-   // 4xx or 5xx
-   if (!response.ok) {
+  // 4xx or 5xx
+  if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.description);
   }
 
   const data = await response.json();
   return data;
-}
+};
 
 export function useJobItems(searchText: string) {
-
-  const {data, isLoading, error} = useQuery({
-    queryKey: ["jobItems", searchText],   
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["jobItems", searchText],
     queryFn: () => fetchJobItems(searchText),
     staleTime: 1000 * 60 * 60, // 1 hour
     refetchOnWindowFocus: false,
@@ -111,11 +112,10 @@ export function useJobItems(searchText: string) {
     enabled: Boolean(searchText), // disable query when id is null or undefined. it only runs when id is truthy first mount.
     // @ts-ignore
     onError: handleErrors,
-  })
+  });
 
   // @ts-ignore
-  return {jobItems: data?.jobItems, isLoading, error}  as const;
-
+  return { jobItems: data?.jobItems, isLoading, error } as const;
 }
 
 // ---------------------------------------------------------
@@ -175,8 +175,6 @@ export function useDebounce<T>(searchText: T): T {
 //   return { jobItem, loading } as const;
 // }
 
-
-
 // export function useDebounce<T>(value: T, delay = 250): T {
 //   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -201,9 +199,9 @@ export function useDebounce<T>(searchText: T): T {
 //     const fetchJobs = async () => {
 //       if (!searchText) return null;
 //       setLoading(true);
-      // const response = await fetch(`${BASE_URL}?search=${searchText}`);
-      // const data = await response.json();
-      // console.log(data.jobItems);
+// const response = await fetch(`${BASE_URL}?search=${searchText}`);
+// const data = await response.json();
+// console.log(data.jobItems);
 
 //       setJobItems(data.jobItems);
 //       setLoading(false);
@@ -214,3 +212,30 @@ export function useDebounce<T>(searchText: T): T {
 
 //   return { jobItems, loading } as const;
 // }
+
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState(() =>
+    JSON.parse(localStorage.getItem(key) || JSON.stringify(initialValue))
+  );
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
+
+  return [value, setValue] as const;
+}
+
+// ---------------------------------------------------------
+
+export function useBookmarkContext() {
+  const context = React.useContext(BookmarkContext);
+  if (!context) {
+    throw new Error(
+      "useBookmarkContext must be used within a BookmarkContextProvider"
+    );
+  }
+  return context;
+}
