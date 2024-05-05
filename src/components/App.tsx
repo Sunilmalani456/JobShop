@@ -17,18 +17,27 @@ function App() {
   const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(searchText);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<"relevant" | "recent">("relevant");
+  const { jobItems, isLoading, error } = useJobItems(debouncedSearchText);
 
   // console.log(debouncedSearchText);
 
-  const { jobItems, isLoading, error } = useJobItems(debouncedSearchText);
-
   const totalJobItems = jobItems?.length || 0;
   const totalNumberOfPages = totalJobItems / RESULT_PER_PAGE;
-  const jobItemsSlice =
-    jobItems?.slice(
-      currentPage * RESULT_PER_PAGE - RESULT_PER_PAGE,
-      currentPage * RESULT_PER_PAGE
-    ) || [];
+
+  const jobItemSort =
+    jobItems?.sort((a, b) => {
+      if (sortBy === "relevant") {
+        return b.relevanceScore - a.relevanceScore; //sort in descending order of relevance score (b-a)
+      } else {
+        return a.daysAgo - b.daysAgo; //sort in ascending order of days ago (a-b)
+      }
+    }) || [];
+
+  const jobItemsSortedAndSlice = jobItemSort.slice(
+    currentPage * RESULT_PER_PAGE - RESULT_PER_PAGE,
+    currentPage * RESULT_PER_PAGE
+  );
 
   const handlePaginationClick = (page: "next" | "prev") => {
     if (page === "next") {
@@ -37,6 +46,12 @@ function App() {
       setCurrentPage((prev) => prev - 1);
     }
   };
+
+  const handleSortByChange = (newSortBy: "relevant" | "recent") => {
+    setCurrentPage(1);
+    setSortBy(newSortBy);
+  };
+
   if (error) toast.error(error.message);
 
   return (
@@ -47,9 +62,9 @@ function App() {
         <Sidebar>
           <SidebarTop>
             <ResultsCount totalNumberOfResults={totalJobItems} />
-            <Sorting />
+            <Sorting sortBy={sortBy} onClick={handleSortByChange} />
           </SidebarTop>
-          <JobList jobItems={jobItemsSlice} loading={isLoading} />
+          <JobList jobItems={jobItemsSortedAndSlice} loading={isLoading} />
           <Pagination
             currentPage={currentPage}
             onClick={handlePaginationClick}
