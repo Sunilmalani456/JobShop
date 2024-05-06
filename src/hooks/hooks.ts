@@ -122,17 +122,17 @@ export function useSearchQuery(searchText: string) {
 
 export function useJobItems(ids: number[]){
   const results = useQueries({
-    queries:  ids.map((id) => ({
-    queryKey: ["job-item", id],
-    queryFn: () => fetchJobItem(id),    
-    staleTime: 1000 * 60 * 60, // 1 hour
-    refetchOnWindowFocus: false,
-    retry: false, // disable retry
-    enabled: Boolean(id), // disable query when id is null or undefined. it only runs when id is truthy first mount.
-    // @ts-ignore
-    onError: handleErrors,
-    }))
-  })
+    queries: ids.map((id) => ({
+      queryKey: ["jobItem", id],
+      queryFn: () => fetchJobItem(id),
+      staleTime: 1000 * 60 * 60, // 1 hour
+      refetchOnWindowFocus: false,
+      retry: false, // disable retry
+      enabled: Boolean(id), // disable query when id is null or undefined. it only runs when id is truthy first mount.
+      // @ts-ignore
+      onError: handleErrors,
+    })),
+  });
 
 
  const jobItems = results.map((result) => result.data?.jobItem)
