@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BookmarkContext } from "../contexts/BookmarkContextProvider";
@@ -102,7 +102,7 @@ const fetchJobItems = async (
   return data;
 };
 
-export function useJobItems(searchText: string) {
+export function useSearchQuery(searchText: string) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["jobItems", searchText],
     queryFn: () => fetchJobItems(searchText),
@@ -116,6 +116,33 @@ export function useJobItems(searchText: string) {
 
   // @ts-ignore
   return { jobItems: data?.jobItems, isLoading, error } as const;
+}
+
+// ---------------------------------------------------------
+
+export function useJobItems(ids: number[]){
+  const results = useQueries({
+    queries:  ids.map((id) => ({
+    queryKey: ["job-item", id],
+    queryFn: () => fetchJobItem(id),    
+    staleTime: 1000 * 60 * 60, // 1 hour
+    refetchOnWindowFocus: false,
+    retry: false, // disable retry
+    enabled: Boolean(id), // disable query when id is null or undefined. it only runs when id is truthy first mount.
+    // @ts-ignore
+    onError: handleErrors,
+    }))
+  })
+
+
+ const jobItems = results.map((result) => result.data?.jobItem)
+ .filter((jobItem) => jobItem !== undefined);
+//  .filter((jobItem) => Boolean(jobItem));
+//  .filter((jobItem) => !!jobItem); // mean false, null, undefined, 0, NaN, "" are filtered out
+ const isLoading = results.some((result) => result.isLoading);
+
+
+ return { jobItems, isLoading } as const;
 }
 
 // ---------------------------------------------------------

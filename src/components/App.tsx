@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
-import { RESULT_PER_PAGE, useDebounce, useJobItems } from "../hooks/hooks";
+import toast, { Toaster } from "react-hot-toast";
+import { RESULT_PER_PAGE, useDebounce, useSearchQuery } from "../hooks/hooks";
 import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
@@ -11,14 +12,13 @@ import Pagination from "./PaginationControls";
 import ResultsCount from "./ResultsCount";
 import Sidebar, { SidebarTop } from "./Sidebar";
 import Sorting from "./SortingControls";
-import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(searchText);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<"relevant" | "recent">("relevant");
-  const { jobItems, isLoading, error } = useJobItems(debouncedSearchText);
+  const { jobItems, isLoading, error } = useSearchQuery(debouncedSearchText);
 
   // console.log(debouncedSearchText);
 
