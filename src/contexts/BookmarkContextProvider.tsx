@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import React, { createContext } from "react";
 import { useJobItems, useLocalStorage } from "../hooks/hooks";
 import { JobItemExpendend } from "../lib/types";

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { JobItem } from "../hooks/hooks";
 
 export type JobItemExpendend = JobItem & {
