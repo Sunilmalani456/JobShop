@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import toast from "react-hot-toast";
-import { useActiveId, useJobItem } from "../hooks/hooks";
+import { useActiveIdContext, useJobItem } from "../hooks/hooks";
 import BookmarkIcon from "./BookmarkIcon";
 import Spinner from "./Spinner";
 
 export default function JobItemContent() {
-  const activeId = useActiveId();
+  const { activeId } = useActiveIdContext();
   const { jobItem, isLoading, error } = useJobItem(activeId);
   // in an array we can change the name of the variable as we want but not in object
 

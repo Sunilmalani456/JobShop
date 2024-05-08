@@ -1,38 +1,42 @@
 import { TriangleDownIcon } from "@radix-ui/react-icons";
+import { useRef, useState } from "react";
+import { useOutSideClick } from "../hooks/hooks";
 import BookmarksPopover from "./BookmarksPopover";
-import { useEffect, useRef, useState } from "react";
 
 export default function BookmarksButton() {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        e.target instanceof HTMLElement &&
-        !buttonRef.current?.contains(e.target) &&
-        !popoverRef.current?.contains(e.target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    // const handleOutsideClick = (e: MouseEvent) => {
-    //   if (
-    //     e.target instanceof HTMLElement &&
-    //     !e.target.closest(".bookmarks-btn") &&
-    //     !e.target.closest(".bookmarks-popover")
-    //   ) {
-    //     setIsOpen(false);
-    //   }
-    // };
+  useOutSideClick([buttonRef, popoverRef], () => setIsOpen(false));
 
-    document.addEventListener("click", handleOutsideClick);
+  // useEffect(() => {
+  //   const handleOutsideClick = (e: MouseEvent) => {
+  //     if (
+  //       e.target instanceof HTMLElement &&
+  //       !buttonRef.current?.contains(e.target) &&
+  //       !popoverRef.current?.contains(e.target)
+  //     ) {
+  //       setIsOpen(false);
+  //     }
+  //   };
+  //   // const handleOutsideClick = (e: MouseEvent) => {
+  //   //   if (
+  //   //     e.target instanceof HTMLElement &&
+  //   //     !e.target.closest(".bookmarks-btn") &&
+  //   //     !e.target.closest(".bookmarks-popover")
+  //   //   ) {
+  //   //     setIsOpen(false);
+  //   //   }
+  //   // };
 
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, []);
+  //   document.addEventListener("click", handleOutsideClick);
+
+  //   return () => {
+  //     document.removeEventListener("click", handleOutsideClick);
+  //   };
+  // }, []);
+
   return (
     <section>
       <button
