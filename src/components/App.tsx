@@ -12,8 +12,6 @@ import Sorting from "./SortingControls";
 import JobListSearch from "./joblistsearch";
 
 function App() {
-  // if (error) toast.error(error.message);
-
   return (
     <>
       <Background />
