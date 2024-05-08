@@ -5,7 +5,7 @@ import { JobItemExpendend } from "../lib/types";
 type BookMarkContext = {
   bookMarkedIds: number[];
   handleToggleBookMark: (id: number) => void;
-  bookmarkJobItems: JobItemExpendend[] | null;
+  bookmarkJobItems: JobItemExpendend[] | undefined;
   isLoading: boolean;
 };
 
