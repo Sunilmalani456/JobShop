@@ -1,16 +1,6 @@
-import { useActiveIdContext } from "../hooks/hooks";
+import { JobItem, useActiveIdContext } from "../hooks/hooks";
 import JobListItem from "./JobListItem";
 import Spinner from "./Spinner";
-
-type JobItem = {
-  id: number;
-  badgeLetters: string;
-  title: string;
-  company: string;
-  date: string;
-  relevanceScore: number;
-  daysAgo: number;
-};
 
 type JobListProps = {
   jobItems: JobItem[];
@@ -18,7 +8,6 @@ type JobListProps = {
 };
 export function JobList({ jobItems, loading }: JobListProps) {
   const { activeId } = useActiveIdContext();
-  // const {} = useJobItemContext();
   return (
     <ul className="job-list">
       {loading && <Spinner />}
